@@ -1,6 +1,6 @@
 """
 Main entry point for Kundali, Shodashavargas, Vimshottari Dasha-Bhuktis,
-and Life Milestones calculation engine.
+Life Milestones, and Vedic Medical Astrology calculation engine.
 """
 import os
 import sys
@@ -17,6 +17,7 @@ from app.core.vargas import calculate_all_vargas
 from app.core.dasha import calculate_vimshottari_dashas, get_active_dasha
 from app.core.milestones import LifeMilestoneEngine
 from app.engines.lifestyle_advisor import LifestyleAdvisor
+from app.engines.medical_astrology_engine import VedicMedicalAstrologyEngine
 from app.visualizer.south_indian import render_south_indian_svg
 from app.visualizer.north_indian import render_north_indian_svg
 from app.core.constants import ZODIAC_SANSKRIT, SHODASHAVARGA_INFO
@@ -160,7 +161,30 @@ def generate_full_astrological_profile(
     print(f"  ★ Eternal Power Colors (Lagna & 9th Lords) : {', '.join(dossier.eternal_power_colors)}")
     print(f"  ⚠ Eternal Caution Colors (8th Dusthana Lord): {', '.join(dossier.eternal_caution_colors)}")
 
-    # 7. Generate and Save SVG Visualizations
+    # 7. Vedic Medical Astrology & Ayur-Jyotisha Diagnostic
+    med_report = VedicMedicalAstrologyEngine.evaluate(kundali, client_name="Native")
+    print("\n" + "=" * 80)
+    print("VEDIC MEDICAL ASTROLOGY & AYUR-JYOTISHA (BPHS TRADITION)")
+    print("=" * 80)
+    print(f"Constitutional Prakriti : {med_report.dosha_profile.dominant_prakriti}")
+    print(f"Tridosha Distribution   : Vata: {med_report.dosha_profile.vata_pct}% | Pitta: {med_report.dosha_profile.pitta_pct}% | Kapha: {med_report.dosha_profile.kapha_pct}%")
+    print(f"Digestive Agni Fire     : {med_report.diagnosis_summary.digestive_agni_strength}")
+    print(f"Vital Ojas Reserve      : {med_report.diagnosis_summary.overall_vitality_ojas}")
+    print(f"Cardiovascular Status   : {med_report.diagnosis_summary.cardiovascular_risk}")
+    print(f"Neurological / Mental   : {med_report.diagnosis_summary.mental_neurological_balance}")
+    print(f"Musculoskeletal Status  : {med_report.diagnosis_summary.musculoskeletal_joint_health}")
+    print(f"Surgery / Wound Risk    : {med_report.diagnosis_summary.surgery_accident_vulnerability}")
+    marakas = ', '.join(med_report.maraka_badhaka_analysis['maraka_lords'])
+    badhaka = med_report.maraka_badhaka_analysis['badhaka_lord']
+    print(f"Maraka Health Triggers  : {marakas} | Badhaka Lord: {badhaka}")
+    print("\nTop Ayur-Jyotisha Remedial Herbs:")
+    for h in med_report.remedial_chikitsa.ayurvedic_herbs[:3]:
+        print(f"  • {h['herb']}: {h['action']}")
+    print("\nSupreme Healing Mantra:")
+    m0 = med_report.remedial_chikitsa.healing_mantras[0]
+    print(f"  {m0['deity']}: {m0['mantra']}")
+
+    # 8. Generate and Save SVG Visualizations
     d1_south_svg = render_south_indian_svg(kundali, varga_div=1, title="D1 Rasi Chart - South Indian")
     d1_north_svg = render_north_indian_svg(kundali, varga_div=1, title="D1 Rasi Chart - North Indian Diamond")
     d9_south_svg = render_south_indian_svg(kundali, varga_div=9, title="D9 Navamsa Chart - South Indian")
