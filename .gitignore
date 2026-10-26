@@ -58,3 +58,8 @@ venv.bak/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Local folders not tracked in GitHub
+rka project/
+rka_project/
+rka/
