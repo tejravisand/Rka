@@ -1,6 +1,6 @@
 """
 Main entry point for Kundali, Shodashavargas, Vimshottari Dasha-Bhuktis,
-Life Milestones, and Vedic Medical Astrology calculation engine.
+Life Milestones, Vedic Medical Astrology, and Western Iatromathematics.
 """
 import os
 import sys
@@ -18,6 +18,7 @@ from app.core.dasha import calculate_vimshottari_dashas, get_active_dasha
 from app.core.milestones import LifeMilestoneEngine
 from app.engines.lifestyle_advisor import LifestyleAdvisor
 from app.engines.medical_astrology_engine import VedicMedicalAstrologyEngine
+from app.engines.integrative_medical_engine import IntegrativeMedicalEngine
 from app.visualizer.south_indian import render_south_indian_svg
 from app.visualizer.north_indian import render_north_indian_svg
 from app.core.constants import ZODIAC_SANSKRIT, SHODASHAVARGA_INFO
@@ -184,7 +185,30 @@ def generate_full_astrological_profile(
     m0 = med_report.remedial_chikitsa.healing_mantras[0]
     print(f"  {m0['deity']}: {m0['mantra']}")
 
-    # 8. Generate and Save SVG Visualizations
+    # 8. Western Iatromathematics & Integrative East-West Medical Synthesis
+    integrative_dossier = IntegrativeMedicalEngine.evaluate(kundali, client_name="Native")
+    west = integrative_dossier.western_report
+    print("\n" + "=" * 80)
+    print("WESTERN MEDICAL ASTROLOGY (IATROMATHEMATICS & CULPEPER HERBALISM)")
+    print("=" * 80)
+    print(f"Tropical Ascendant      : {west.tropical_ascendant.sign_name} ({west.tropical_ascendant.degrees_in_sign:.1f}°)")
+    print(f"Galenic Temperament     : {west.temperament.dominant_temperament} ({west.temperament.constitutional_qualities})")
+    print(f"Four Humors Profile     : Choleric: {west.temperament.choleric_pct}% | Sanguine: {west.temperament.sanguine_pct}% | Melancholic: {west.temperament.melancholic_pct}% | Phlegmatic: {west.temperament.phlegmatic_pct}%")
+    print(f"Clinical Humoral Focus  : {west.temperament.clinical_implications}")
+    print("\nCulpeper Astrological Herbal Prescriptions:")
+    for ch in west.culpeper_remedies[:3]:
+        print(f"  • {ch.herb_name} ({ch.botanical_name}) [{ch.ruling_planet}] - {ch.cure_mechanism}: {ch.temperament_action}")
+
+    print("\n" + "=" * 80)
+    print("INTEGRATIVE EAST-WEST MEDICAL SYNTHESIS (CONSENSUS DIAGNOSTIC)")
+    print("=" * 80)
+    for cv in integrative_dossier.consensus_vulnerabilities:
+        print(f"  ★ {cv.body_system} [{cv.clinical_priority}]:")
+        print(f"     - Vedic   : {cv.vedic_indication}")
+        print(f"     - Western : {cv.western_indication}")
+        print(f"     - Therapy : {cv.integrated_action_plan}")
+
+    # 9. Generate and Save SVG Visualizations
     d1_south_svg = render_south_indian_svg(kundali, varga_div=1, title="D1 Rasi Chart - South Indian")
     d1_north_svg = render_north_indian_svg(kundali, varga_div=1, title="D1 Rasi Chart - North Indian Diamond")
     d9_south_svg = render_south_indian_svg(kundali, varga_div=9, title="D9 Navamsa Chart - South Indian")
