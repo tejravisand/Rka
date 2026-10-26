@@ -4,6 +4,13 @@ and Life Milestones calculation engine.
 """
 import os
 import sys
+from pathlib import Path
+
+# Ensure project root is in sys.path when running app/main.py directly
+project_root = str(Path(__file__).resolve().parent.parent)
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
 from datetime import datetime, timezone, timedelta
 from app.core.kundali import calculate_kundali
 from app.core.vargas import calculate_all_vargas

@@ -8,28 +8,28 @@
 <line x1="450.0" y1="0" x2="450.0" y2="600" stroke="#666666" stroke-width="1.5"/>
 <rect x="150.0" y="150.0" width="300.0" height="300.0" fill="#f0ebe1" stroke="#333333" stroke-width="2"/>
 <text x="300.0" y="275.0" text-anchor="middle" font-size="18" font-weight="bold" fill="#2c3e50">D9 Navamsa Chart - South Indian</text>
-<text x="300.0" y="305.0" text-anchor="middle" font-size="13" fill="#555555">Ayanamsa: Lahiri (Chitra Paksha) (23.42°)</text>
-<text x="300.0" y="330.0" text-anchor="middle" font-size="12" fill="#777777">1968-11-19 22:15 UTC</text>
+<text x="300.0" y="305.0" text-anchor="middle" font-size="13" fill="#555555">Ayanamsa: Lahiri (Chitra Paksha) (23.80°)</text>
+<text x="300.0" y="330.0" text-anchor="middle" font-size="12" fill="#777777">1995-08-15 05:00 UTC</text>
 <text x="158.0" y="18.0" font-size="11" font-weight="600" fill="#888888">Mesha</text>
+<text x="160.0" y="36.0" font-size="12"><tspan fill='#d9534f'>ASC 13.6°</tspan></text>
 <text x="308.0" y="18.0" font-size="11" font-weight="600" fill="#888888">Vrishabha</text>
-<text x="310.0" y="36.0" font-size="12"><tspan fill='#204a87'>MA 1.8°</tspan></text>
-<text x="310.0" y="54.0" font-size="12"><tspan fill='#204a87'>ME 11.9°</tspan></text>
-<text x="310.0" y="72.0" font-size="12"><tspan fill='#204a87'>KE 0.8°</tspan></text>
+<text x="310.0" y="36.0" font-size="12"><tspan fill='#204a87'>KE 23.9°</tspan></text>
 <text x="458.0" y="18.0" font-size="11" font-weight="600" fill="#888888">Mithuna</text>
-<text x="460.0" y="36.0" font-size="12"><tspan fill='#204a87'>MO 15.9°</tspan></text>
+<text x="460.0" y="36.0" font-size="12"><tspan fill='#204a87'>SA 24.8°</tspan></text>
 <text x="458.0" y="168.0" font-size="11" font-weight="600" fill="#888888">Karka</text>
-<text x="460.0" y="186.0" font-size="12"><tspan fill='#204a87'>VE 22.3°</tspan></text>
+<text x="460.0" y="186.0" font-size="12"><tspan fill='#204a87'>MA 14.9°</tspan></text>
 <text x="458.0" y="318.0" font-size="11" font-weight="600" fill="#888888">Simha</text>
-<text x="460.0" y="336.0" font-size="12"><tspan fill='#204a87'>SU 8.2°</tspan></text>
+<text x="460.0" y="336.0" font-size="12"><tspan fill='#204a87'>ME 19.0°</tspan></text>
 <text x="458.0" y="468.0" font-size="11" font-weight="600" fill="#888888">Kanya</text>
 <text x="308.0" y="468.0" font-size="11" font-weight="600" fill="#888888">Tula</text>
+<text x="310.0" y="486.0" font-size="12"><tspan fill='#204a87'>JU 19.2°</tspan></text>
 <text x="158.0" y="468.0" font-size="11" font-weight="600" fill="#888888">Vrischika</text>
-<text x="160.0" y="486.0" font-size="12"><tspan fill='#204a87'>RA 0.8°</tspan></text>
+<text x="160.0" y="486.0" font-size="12"><tspan fill='#204a87'>RA 23.9°</tspan></text>
 <text x="8.0" y="468.0" font-size="11" font-weight="600" fill="#888888">Dhanus</text>
 <text x="8.0" y="318.0" font-size="11" font-weight="600" fill="#888888">Makara</text>
 <text x="8.0" y="168.0" font-size="11" font-weight="600" fill="#888888">Kumbha</text>
-<text x="10.0" y="186.0" font-size="12"><tspan fill='#d9534f'>ASC 29.5°</tspan></text>
+<text x="10.0" y="186.0" font-size="12"><tspan fill='#204a87'>MO 14.1°</tspan></text>
+<text x="10.0" y="204.0" font-size="12"><tspan fill='#204a87'>VE 29.1°</tspan></text>
 <text x="8.0" y="18.0" font-size="11" font-weight="600" fill="#888888">Meena</text>
-<text x="10.0" y="36.0" font-size="12"><tspan fill='#204a87'>JU 9.0°</tspan></text>
-<text x="10.0" y="54.0" font-size="12"><tspan fill='#204a87'>SA 0.3°</tspan></text>
+<text x="10.0" y="36.0" font-size="12"><tspan fill='#204a87'>SU 13.2°</tspan></text>
 </svg>

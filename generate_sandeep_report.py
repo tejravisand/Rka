@@ -24,33 +24,43 @@ dossier = SandeepConsultationEngine.evaluate(kundali)
 
 # Output paths
 output_pdf = os.path.abspath(os.path.join("output", "sandeep_r_complete_consultation_dossier.pdf"))
-artifact_dir = r"C:\Users\Admin\.gemini\antigravity\brain\bf8c0449-bafc-44d0-a5f0-768a5a9cb6ea"
-artifact_pdf = os.path.join(artifact_dir, "sandeep_r_complete_consultation_dossier.pdf")
 
 print(f"Generating Consultation PDF at: {output_pdf}...")
 generate_sandeep_pdf_report(dossier, output_pdf, location)
 
-# Copy to artifact folder
-shutil.copyfile(output_pdf, artifact_pdf)
+artifact_dir = os.environ.get("ANTIGRAVITY_ARTIFACT_DIR")
+if artifact_dir and os.path.isdir(artifact_dir):
+    shutil.copyfile(output_pdf, os.path.join(artifact_dir, "sandeep_r_complete_consultation_dossier.pdf"))
 
 file_size = os.path.getsize(output_pdf)
 print(f"SUCCESS: Consultation PDF for {client_name} generated successfully! ({file_size} bytes)")
 print(f"Local Path: {output_pdf}")
-print(f"Artifact Path: {artifact_pdf}")
 
-# Create desktop shortcut
-desktop_dir = r"C:\Users\Admin\Desktop"
-shortcut_path = os.path.join(desktop_dir, "Sandeep_R_Astrology_Report.url")
-with open(shortcut_path, "w", encoding="utf-8") as f:
-    f.write("[InternetShortcut]\n")
-    f.write("URL=http://localhost:8080/sandeep_r_complete_consultation_dossier.pdf\n")
-    f.write("IconIndex=0\n")
-    f.write(r"IconFile=C:\Program Files\Google\Chrome\Application\chrome.exe" + "\n")
-print(f"Created Desktop Shortcut: {shortcut_path}")
+# Create desktop shortcut if Desktop folder exists
+desktop_dir = os.path.join(os.path.expanduser("~"), "Desktop")
+if os.path.isdir(desktop_dir):
+    shortcut_path = os.path.join(desktop_dir, "Sandeep_R_Astrology_Report.url")
+    try:
+        with open(shortcut_path, "w", encoding="utf-8") as f:
+            f.write("[InternetShortcut]\n")
+            f.write(f"URL=file:///{output_pdf.replace(os.sep, '/')}\n")
+            f.write("IconIndex=0\n")
+            f.write(r"IconFile=C:\Program Files\Google\Chrome\Application\chrome.exe" + "\n")
+        print(f"Created Desktop Shortcut: {shortcut_path}")
+    except Exception as e:
+        print(f"Could not create desktop shortcut: {e}")
 
-# Open in Chrome
-chrome_bin = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
-if os.path.exists(chrome_bin):
+# Open in Chrome or default browser
+chrome_paths = [
+    r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+    r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
+    os.path.expandvars(r"%LOCALAPPDATA%\Google\Chrome\Application\chrome.exe")
+]
+chrome_bin = next((p for p in chrome_paths if os.path.exists(p)), None)
+if chrome_bin:
     print("Launching Google Chrome...")
-    subprocess.Popen([chrome_bin, "http://localhost:8080/sandeep_r_complete_consultation_dossier.pdf"])
+    subprocess.Popen([chrome_bin, output_pdf])
     print("Opened in Google Chrome!")
+else:
+    import webbrowser
+    webbrowser.open(output_pdf)
