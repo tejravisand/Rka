@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600" style="background-color: #faf8f5; font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;">
+<text x="300.0" y="24" text-anchor="middle" font-size="15" font-weight="bold" fill="#2c3e50">D1 Rasi Chart - North Indian Diamond</text>
+<rect x="35" y="35" width="530" height="530" fill="#fffdf9" stroke="#333333" stroke-width="2.5"/>
+<line x1="35" y1="35" x2="565" y2="565" stroke="#444444" stroke-width="1.8"/>
+<line x1="35" y1="565" x2="565" y2="35" stroke="#444444" stroke-width="1.8"/>
+<polygon points="300.0,35 565,300.0 300.0,565 35,300.0" fill="none" stroke="#444444" stroke-width="1.8"/>
+<text x="300.0" y="35.42" font-size="12" font-weight="bold" fill="#888888" text-anchor="middle">12</text>
+<text x="300.0" y="21.28" font-size="11" text-anchor="middle"><tspan fill='#d9534f' font-weight='bold'>ASC 26.6°</tspan></text>
+<text x="300.0" y="35.28" font-size="11" text-anchor="middle"><tspan fill='#c41515'>SA(R) 26.7°</tspan></text>
+<text x="300.0" y="49.28" font-size="11" text-anchor="middle"><tspan fill='#c41515'>RA(R) 13.4°</tspan></text>
+<text x="236.4" y="35.44" font-size="12" font-weight="bold" fill="#888888" text-anchor="middle">1</text>
+<text x="151.6" y="36.14" font-size="12" font-weight="bold" fill="#888888" text-anchor="middle">2</text>
+<text x="257.6" y="37.0" font-size="12" font-weight="bold" fill="#888888" text-anchor="middle">3</text>
+<text x="151.6" y="38.1" font-size="12" font-weight="bold" fill="#888888" text-anchor="middle">4</text>
+<text x="236.4" y="39.68" font-size="12" font-weight="bold" fill="#888888" text-anchor="middle">5</text>
+<text x="300.0" y="39.06" font-size="12" font-weight="bold" fill="#888888" text-anchor="middle">6</text>
+<text x="300.0" y="26.04" font-size="11" text-anchor="middle"><tspan fill='#204a87'>MA 13.5°</tspan></text>
+<text x="300.0" y="40.04" font-size="11" text-anchor="middle"><tspan fill='#204a87'>JU 7.7°</tspan></text>
+<text x="300.0" y="54.04" font-size="11" text-anchor="middle"><tspan fill='#c41515'>KE(R) 13.4°</tspan></text>
+<text x="363.6" y="41.24" font-size="12" font-weight="bold" fill="#888888" text-anchor="middle">7</text>
+<text x="416.59999999999997" y="34.88" font-size="11" text-anchor="middle"><tspan fill='#204a87'>MO 28.4°</tspan></text>
+<text x="416.59999999999997" y="48.88" font-size="11" text-anchor="middle"><tspan fill='#204a87'>ME 24.7°</tspan></text>
+<text x="448.40000000000003" y="40.58" font-size="12" font-weight="bold" fill="#888888" text-anchor="middle">8</text>
+<text x="490.8" y="41.48" font-size="11" text-anchor="middle"><tspan fill='#204a87'>SU 4.2°</tspan></text>
+<text x="342.4" y="40.0" font-size="12" font-weight="bold" fill="#888888" text-anchor="middle">9</text>
+<text x="416.59999999999997" y="40.0" font-size="11" text-anchor="middle"><tspan fill='#204a87'>VE 12.5°</tspan></text>
+<text x="448.40000000000003" y="39.18" font-size="12" font-weight="bold" fill="#888888" text-anchor="middle">10</text>
+<text x="363.6" y="37.64" font-size="12" font-weight="bold" fill="#888888" text-anchor="middle">11</text>
+</svg>

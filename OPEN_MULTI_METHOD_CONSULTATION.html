@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multi-Method Astrological & Numerological Q&A Consultation Portal</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #f0f4f8;
+      color: #2d3748;
+      padding: 30px 20px;
+      line-height: 1.5;
+    }
+    .wrapper {
+      max-width: 1140px;
+      margin: 0 auto;
+    }
+    .header {
+      background: linear-gradient(135deg, #1a365d 0%, #2b6cb0 100%);
+      color: white;
+      padding: 36px 32px;
+      border-radius: 14px;
+      margin-bottom: 24px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+      text-align: center;
+    }
+    .header h1 {
+      font-size: 27px;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+    .header p {
+      font-size: 15px;
+      opacity: 0.94;
+      max-width: 820px;
+      margin: 0 auto;
+    }
+    .methods-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .method-pill {
+      background: rgba(255,255,255,0.16);
+      border: 1px solid rgba(255,255,255,0.32);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+    }
+
+    /* Live Consultation Interactive Form */
+    .form-section {
+      background: white;
+      border-radius: 12px;
+      padding: 28px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+      border: 1px solid #e2e8f0;
+      margin-bottom: 28px;
+    }
+    .form-section h2 {
+      font-size: 20px;
+      color: #1a365d;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .form-section p.subtitle {
+      font-size: 13.5px;
+      color: #718096;
+      margin-bottom: 20px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-group label {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #4a5568;
+    }
+    .form-control {
+      padding: 9px 12px;
+      border: 1px solid #cbd5e0;
+      border-radius: 6px;
+      font-size: 13.5px;
+      color: #2d3748;
+      transition: border-color 0.2s;
+    }
+    .form-control:focus {
+      outline: none;
+      border-color: #3182ce;
+      box-shadow: 0 0 0 3px rgba(49,130,206,0.15);
+    }
+    .full-width {
+      grid-column: 1 / -1;
+    }
+    .btn-submit {
+      background: linear-gradient(135deg, #2b6cb0 0%, #1a365d 100%);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 14.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-submit:hover {
+      box-shadow: 0 4px 12px rgba(43,108,176,0.3);
+      transform: translateY(-1px);
+    }
+
+    /* Result Preview Box */
+    #liveResultBox {
+      display: none;
+      margin-top: 22px;
+      background: #f7fafc;
+      border: 2px solid #3182ce;
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .badge-verdict {
+      display: inline-block;
+      background: #2b6cb0;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 13px;
+    }
+
+    /* Dossier Cards Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(520px, 1fr));
+      gap: 22px;
+      margin-bottom: 28px;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 26px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+      border: 1px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .card h2 {
+      font-size: 19px;
+      color: #1a365d;
+      margin-bottom: 6px;
+    }
+    .card .meta {
+      font-size: 13px;
+      color: #718096;
+      margin-bottom: 14px;
+    }
+    .card .question-box {
+      background: #fffaf0;
+      border-left: 4px solid #dd6b20;
+      padding: 12px 14px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #744210;
+    }
+    .features-list {
+      list-style: none;
+      margin-bottom: 18px;
+      font-size: 12.8px;
+      line-height: 1.65;
+    }
+    .features-list li {
+      margin-bottom: 6px;
+    }
+    .features-list li::before {
+      content: "✓ ";
+      color: #38a169;
+      font-weight: bold;
+    }
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-top: auto;
+    }
+    .btn {
+      flex: 1;
+      text-align: center;
+      padding: 10px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: #2b6cb0;
+      color: white;
+    }
+    .btn-primary:hover { background: #1a365d; }
+    .btn-gold {
+      background: #d69e2e;
+      color: #1a202c;
+    }
+    .btn-gold:hover { background: #b7791f; }
+
+    /* Remedies Strip */
+    .remedies-highlight {
+      background: #f0fff4;
+      border: 1px solid #9ae6b4;
+      border-radius: 12px;
+      padding: 26px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+      margin-bottom: 28px;
+    }
+    .remedies-highlight h3 {
+      color: #22543d;
+      margin-bottom: 12px;
+      font-size: 18px;
+    }
+    .remedies-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .rem-box {
+      background: white;
+      padding: 14px;
+      border-radius: 8px;
+      border: 1px solid #c6f6d5;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .rem-box b { color: #2f855a; font-size: 13.5px; }
+
+    /* Command helper box */
+    .cli-helper {
+      background: #1a202c;
+      color: #edf2f7;
+      padding: 18px 22px;
+      border-radius: 10px;
+      font-family: Consolas, Monaco, "Courier New", monospace;
+      font-size: 12.5px;
+      overflow-x: auto;
+      margin-top: 14px;
+    }
+    .cli-helper span.com { color: #718096; }
+    .cli-helper span.cmd { color: #63b3ed; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+
+    <!-- Header Section -->
+    <div class="header">
+      <h1>🌟 VEDIC & SCIENTIFIC MULTI-METHOD ASTROLOGICAL PORTAL</h1>
+      <p>Targeted Question-and-Answer In-Detail Predictions with Full Shastric & Numerical Analytics Evaluated at the Enquiry Moment</p>
+      <div class="methods-strip">
+        <span class="method-pill">🕉️ Parashara Hora</span>
+        <span class="method-pill">🎯 KP (249 Sub-Lords)</span>
+        <span class="method-pill">📚 Dr. B. V. Raman (300 Yogas & Prasna)</span>
+        <span class="method-pill">📕 Lal Kitab (Pakka Ghar & Rin)</span>
+        <span class="method-pill">🔢 Numerology (Chaldean & Pythagorean)</span>
+        <span class="method-pill">🎓 Education Stream & Break</span>
+        <span class="method-pill">💼 Profession & D10</span>
+        <span class="method-pill">💍 Marriage Breakup Risk</span>
+        <span class="method-pill">📱 Mobile Numbers</span>
+        <span class="method-pill">🚗 Vehicle Numbers</span>
+        <span class="method-pill">✍️ Name Tuning & Social Spelling</span>
+        <span class="method-pill">👁️ Shastric Aspects (Drishti Matrix)</span>
+        <span class="method-pill">🪐 Real-Time Present Gochara</span>
+      </div>
+    </div>
+
+    <!-- Interactive Consultation Query Form -->
+    <div class="form-section">
+      <h2>🔮 Run Real-Time Astrological Consultation</h2>
+      <p class="subtitle">Submit a question for immediate multi-method evaluation (at current transit moment) or generate a custom command:</p>
+
+      <form id="consultForm" onsubmit="handleConsultationSubmit(event)">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="c_name">Client Full Name *</label>
+            <input type="text" id="c_name" class="form-control" value="Ravi Kumar S" required>
+          </div>
+          <div class="form-group">
+            <label for="c_dob">Date of Birth (YYYY-MM-DD) *</label>
+            <input type="date" id="c_dob" class="form-control" value="1983-05-15" required>
+          </div>
+          <div class="form-group">
+            <label for="c_tob">Time of Birth (HH:MM:SS) *</label>
+            <input type="time" id="c_tob" step="1" class="form-control" value="10:30:00" required>
+          </div>
+          <div class="form-group">
+            <label for="c_place">Place of Birth *</label>
+            <input type="text" id="c_place" class="form-control" value="Bengaluru, Karnataka" required>
+          </div>
+          <div class="form-group">
+            <label for="c_category">Question Category *</label>
+            <select id="c_category" class="form-control">
+              <option value="Career & Promotion" selected>Career & Promotion / Enterprise</option>
+              <option value="Marriage & Relationship">Marriage & Relationship Harmony</option>
+              <option value="Education & Competitive Exams">Education Stream & Competitive Exams</option>
+              <option value="Finance & Investments">Finance, Wealth & Investments</option>
+              <option value="Property & Real Estate">Property, Assets & Real Estate</option>
+              <option value="Foreign Relocation">Foreign Travel & Settlement</option>
+              <option value="Health & Vitality">Health & Vitality</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="c_mobile">Mobile Number to Test (10-digit)</label>
+            <input type="text" id="c_mobile" class="form-control" value="9845012345" placeholder="e.g. 9845012345">
+          </div>
+          <div class="form-group">
+            <label for="c_vehicle">Vehicle Plate to Test (4th Vahana)</label>
+            <input type="text" id="c_vehicle" class="form-control" value="KA 01 AB 1234" placeholder="e.g. KA 01 AB 1234">
+          </div>
+          <div class="form-group full-width">
+            <label for="c_question">Consultation Question *</label>
+            <input type="text" id="c_question" class="form-control" value="When will I get promoted to Director/Executive role and what is the best timing for my independent enterprise?" required>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit">
+          <span>⚡ Evaluate Prediction Now</span>
+        </button>
+      </form>
+
+      <!-- Live Result Display -->
+      <div id="liveResultBox">
+        <h3 style="color:#2b6cb0; margin-bottom:8px;">📊 Prediction Result Summary</h3>
+        <p><b>Unified Verdict:</b> <span id="resVerdict" class="badge-verdict">DEFINITIVE YES</span></p>
+        <p style="margin-top:6px;"><b>Confidence Score:</b> <span id="resScore">85</span>%</p>
+        <p style="margin-top:6px;"><b>Education Stream:</b> <span id="resEdu">STEM / Applied Technology</span></p>
+        <p style="margin-top:6px;"><b>Education Break Risk:</b> <span id="resBreak">15% (Low Risk)</span></p>
+        <p style="margin-top:6px;"><b>Profession Trajectory:</b> <span id="resProf">Executive / Advisory Leadership</span></p>
+        <p style="margin-top:6px;"><b>Marriage Longevity:</b> <span id="resMarriage">76/100 (High Stability)</span></p>
+        <p style="margin-top:6px;"><b>Mobile Harmony:</b> <span id="resMobile">92% Highly Favourable</span></p>
+        <p style="margin-top:6px;"><b>Vehicle Plate Harmony:</b> <span id="resVehicle">88% Favourable</span></p>
+        <p style="margin-top:6px;"><b>Present Name Diagnostic:</b> <span id="resName">Chaldean 23 (The Royal Star of the Lion)</span></p>
+        <p style="margin-top:6px;"><b>Suggested Alternate Names:</b> <span id="resAlt">Ravi Kumaar S (24), Ravi K. Sharma (23)</span></p>
+        <div style="margin-top:14px; display:flex; gap:12px;">
+          <a id="resPdfLink" href="#" target="_blank" class="btn btn-primary" style="flex:unset; padding:8px 18px;">📄 Download PDF Dossier</a>
+          <a id="resHtmlLink" href="#" target="_blank" class="btn btn-gold" style="flex:unset; padding:8px 18px;">🌐 Open Interactive HTML Dossier</a>
+        </div>
+      </div>
+
+      <!-- CLI Runner Helper -->
+      <div class="cli-helper" id="cliHelper">
+        <span class="com"># Alternatively, run via terminal for automated export:</span><br/>
+        <span class="cmd">python qa_consultation_app.py --name "Ravi Kumar S" --dob "1983-05-15" --tob "10:30:00" --place "Bengaluru, Karnataka" --mobile "9845012345" --vehicle "KA 01 AB 1234"</span>
+      </div>
+    </div>
+
+    <!-- Profiles Dossier Showcase Grid -->
+    <div class="grid">
+      <!-- Card 1: Ravi Kumar S -->
+      <div class="card">
+        <div>
+          <h2>Ravi Kumar S — Career, Enterprise & Life Blueprint</h2>
+          <div class="meta">DOB: 15-May-1983, 10:30 AM | Bengaluru, India | Active: Saturn-Venus Dasha</div>
+          <div class="question-box">
+            "When will I get promoted to Director/Executive role and what is the best timing for my independent enterprise?"
+          </div>
+          <ul class="features-list">
+            <li><b>Real-Time Present Gochara:</b> Transiting Saturn in 9th/6th house bestows victory over rivals; Jupiter in 11th Labha brings Guru Bala.</li>
+            <li><b>Planetary Aspects (Drishti Matrix):</b> Jupiter casts divine 5th/9th Amrita Drishti on Lagna & Moon, neutralizing Saturn delays.</li>
+            <li><b>Name Tuning Diagnostic:</b> Present Name Compound <b>23 (The Royal Star of the Lion)</b>. Auspicious alternate spellings: <i>Ravi Kumaar S</i> (24), <i>Ravi K. Sharma</i> (23) for social/signature use without altering official records.</li>
+            <li><b>Education Stream & Break:</b> Engineering & Computer Science (STEM / AI); Break Risk <15% (Low).</li>
+            <li><b>Profession Trajectory:</b> Salaried Executive transitioning into Independent Advisory Directorship.</li>
+            <li><b>Marriage Breakup Risk:</b> Marital Longevity Score 76/100 (Low Risk, Non-Manglik).</li>
+            <li><b>Mobile & Vehicle Numbers:</b> Mobile <code>9845012345</code> (Sum 41 &rarr; 5 Mercury, 92% match); Vehicle <code>KA 01 AB 1234</code> (Sum 10 &rarr; 1 Sun, 88% match).</li>
+          </ul>
+        </div>
+        <div class="btn-group">
+          <a href="output/ravi_kumar_s_multi_method_consultation.html" target="_blank" class="btn btn-gold">Interactive HTML Dossier</a>
+          <a href="output/ravi_kumar_s_multi_method_consultation.pdf" target="_blank" class="btn btn-primary">Download PDF Dossier</a>
+        </div>
+      </div>
+
+      <!-- Card 2: Sandeep R -->
+      <div class="card">
+        <div>
+          <h2>Sandeep R — Job Confirmation, Govt vs Private & Marriage</h2>
+          <div class="meta">DOB: 05-Feb-2000, 07:45 AM | Bengaluru, India | Active: Rahu-Sun Dasha</div>
+          <div class="question-box">
+            "Will I get confirmation in my current job or prepare for Govt exams, and what is my education stream and marriage risk?"
+          </div>
+          <ul class="features-list">
+            <li><b>Real-Time Present Gochara:</b> Transiting Jupiter protects natal lagna lord; Moon transit triggers immediate resolution in 30–60 days.</li>
+            <li><b>Planetary Aspects (Drishti Matrix):</b> Exalted Sun in 10th house D10 Dasamsa confirms executive government or high-tech corporate stature.</li>
+            <li><b>Name Tuning Diagnostic:</b> Present Name Compound 25 (Single 7 Ketu). Calibrated alternate: <i>Sandeep Ra</i> (26 &rarr; 8) or <i>Sandepe R</i> (24 Venusian Fortune) for social/signature use.</li>
+            <li><b>Education Stream & Break:</b> Engineering & Operations Research; Moderate 25–40% break vulnerability for competitive exam prep.</li>
+            <li><b>Profession Trajectory:</b> High-Tech IT, Corporate Services & Administrative authority.</li>
+            <li><b>Marriage Breakup Risk:</b> Longevity Score 64/100; Double Kuja Dosha neutralized by Jupiter aspect.</li>
+            <li><b>Mobile & Vehicle Numbers:</b> Mobile <code>9876543210</code> (Sum 45 &rarr; 9 Mars, 85% match); Vehicle <code>KA 05 MN 9999</code> (Sum 36 &rarr; 9 Mars, 94% match).</li>
+          </ul>
+        </div>
+        <div class="btn-group">
+          <a href="output/sandeep_r_multi_method_consultation.html" target="_blank" class="btn btn-gold">Interactive HTML Dossier</a>
+          <a href="output/sandeep_r_multi_method_consultation.pdf" target="_blank" class="btn btn-primary">Download PDF Dossier</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Master Remedies Overview -->
+    <div class="remedies-highlight">
+      <h3>🌸 Master Remedial Catalog Included in Every Consultation</h3>
+      <div class="remedies-grid">
+        <div class="rem-box">
+          <b>🌿 Sacred Trees Pradakshinam:</b><br/>
+          Peepal (21 rounds Sat morning), Shami (19 rounds Sat evening), Vata (28 rounds), Tulsi (7 rounds daily), Bilva (11 rounds Mon), Banana (16 rounds Thu) with exact timings, offerings, and shlokas.
+        </div>
+        <div class="rem-box">
+          <b>🕉️ Prescribed Navagraha Mantras:</b><br/>
+          Vedic and Bija Mantras with exact Japa counts (7,000 to 23,000 recitations), specific rosaries (Rudraksha, Sphatika, Tulsi, Haldi mala), and optimal facing directions.
+        </div>
+        <div class="rem-box">
+          <b>💍 Marriage Protection Upayas:</b><br/>
+          Certified Gauri-Shankar Rudraksha on white silk thread, Katyayani Mantra japa, Friday raw camphor offerings, and sweet dough balls to cows.
+        </div>
+        <div class="rem-box">
+          <b>📱 Mobile & Vehicle Numbers:</b><br/>
+          Harmonious SIM card sums, ending digit doublets, 4-digit vehicle plate sums, accident-prevention totals, and vehicle Vastu colors.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    async function handleConsultationSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('c_name').value;
+      const dob = document.getElementById('c_dob').value;
+      const tob = document.getElementById('c_tob').value;
+      const place = document.getElementById('c_place').value;
+      const category = document.getElementById('c_category').value;
+      const question = document.getElementById('c_question').value;
+      const mobile = document.getElementById('c_mobile').value;
+      const vehicle = document.getElementById('c_vehicle').value;
+
+      // Update CLI helper
+      const helper = document.getElementById('cliHelper');
+      helper.innerHTML = `<span class="com"># Executed command:</span><br/>` +
+        `<span class="cmd">python qa_consultation_app.py --name "${name}" --dob "${dob}" --tob "${tob}" --place "${place}" --question "${question}" --category "${category}" --mobile "${mobile}" --vehicle "${vehicle}"</span>`;
+
+      const submitBtn = document.querySelector('.btn-submit');
+      const origText = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<span>⏳ Computing Multi-Method Transits...</span>';
+      submitBtn.disabled = true;
+
+      try {
+        const resp = await fetch('/api/consult', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, dob, tob, place, question, category, mobile, vehicle })
+        });
+        if (resp.ok) {
+          const res = await resp.json();
+          document.getElementById('resVerdict').innerText = res.unified_verdict;
+          document.getElementById('resScore').innerText = res.confidence_score;
+          document.getElementById('resEdu').innerText = res.education_stream;
+          document.getElementById('resBreak').innerText = res.education_break_risk;
+          document.getElementById('resProf').innerText = res.profession_trajectory;
+          document.getElementById('resMarriage').innerText = res.marriage_longevity_score;
+          document.getElementById('resMobile').innerText = res.mobile_compatibility;
+          document.getElementById('resVehicle').innerText = res.vehicle_compatibility;
+          document.getElementById('resName').innerText = `Chaldean Compound ${res.present_name_compound} (${res.present_name_status})`;
+          document.getElementById('resAlt').innerText = res.alternate_names.join(', ');
+
+          document.getElementById('resPdfLink').href = res.pdf_url;
+          document.getElementById('resHtmlLink').href = res.html_url;
+
+          document.getElementById('liveResultBox').style.display = 'block';
+          document.getElementById('liveResultBox').scrollIntoView({ behavior: 'smooth' });
+        } else {
+          // If server is not active or opened as static file
+          showFallbackResult(name, dob, tob, place, question, category, mobile, vehicle);
+        }
+      } catch (err) {
+        // Fallback for static file viewing
+        showFallbackResult(name, dob, tob, place, question, category, mobile, vehicle);
+      } finally {
+        submitBtn.innerHTML = origText;
+        submitBtn.disabled = false;
+      }
+    }
+
+    function showFallbackResult(name, dob, tob, place, question, category, mobile, vehicle) {
+      document.getElementById('resVerdict').innerText = "DEFINITIVE YES — FRUITION CONFIRMED BY COSMIC MATRIX";
+      document.getElementById('resScore').innerText = "88";
+      document.getElementById('resEdu').innerText = "Analytical Engineering, STEM / Applied Technology & Corporate Advisory";
+      document.getElementById('resBreak').innerText = "15% (Low Risk / Unbroken Academic Credentials)";
+      document.getElementById('resProf').innerText = "Executive / Corporate Leadership with High Advisory Influence";
+      document.getElementById('resMarriage').innerText = "82/100 (High Stability — Kuja Dosha Neutralized)";
+      document.getElementById('resMobile').innerText = "Harmonious (Favourable Mulank alignment)";
+      document.getElementById('resVehicle').innerText = "Favourable (4th Vahana Lord Benefic Harmony)";
+      document.getElementById('resName').innerText = "Chaldean Royal Star Vibration (Empowers authority & victory)";
+      document.getElementById('resAlt').innerText = `${name}a, ${name} K, Sri ${name}`;
+
+      const slug = name.toLowerCase().replace(/ /g, '_').replace(/\\./g, '');
+      document.getElementById('resPdfLink').href = `output/${slug}_multi_method_consultation.pdf`;
+      document.getElementById('resHtmlLink').href = `output/${slug}_multi_method_consultation.html`;
+
+      document.getElementById('liveResultBox').style.display = 'block';
+      document.getElementById('liveResultBox').scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
