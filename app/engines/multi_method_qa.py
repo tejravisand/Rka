@@ -62,6 +62,10 @@ from app.engines.transit_prashna_engine import (
     TransitPrashnaEngine,
     PresentGocharaDossier
 )
+from app.engines.integrative_medical_engine import (
+    IntegrativeMedicalEngine,
+    IntegrativeMedicalDossier
+)
 
 
 @dataclass
@@ -142,6 +146,7 @@ class MultiMethodQAResponse:
 
     # Comprehensive Remedies
     remedies: ComprehensiveRemedialDossier
+    medical_dossier: Optional[IntegrativeMedicalDossier] = None
 
 
 class MasterAstrologyQAEngine:
@@ -304,6 +309,11 @@ class MasterAstrologyQAEngine:
         )
 
         # -------------------------------------------------------------
+        # METHOD 12: Integrative Medical Astrology (Vedic + Western)
+        # -------------------------------------------------------------
+        medical_dossier = IntegrativeMedicalEngine.evaluate(natal_kundali, client.name)
+
+        # -------------------------------------------------------------
         # UNIFIED SYNTHESIS & CONSENSUS
         # -------------------------------------------------------------
         scores = []
@@ -397,5 +407,6 @@ class MasterAstrologyQAEngine:
             consensus_probability_percent=consensus_prob,
             primary_timeline_forecast=timeline_forecast,
             deep_dive_prediction_analysis=deep_dive_analysis,
-            remedies=remedies_dossier
+            remedies=remedies_dossier,
+            medical_dossier=medical_dossier
         )

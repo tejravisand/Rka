@@ -235,6 +235,8 @@ class TestMultiMethodAstrology(unittest.TestCase):
         self.assertIsNotNone(response.name_tuning)
         self.assertIsNotNone(response.detailed_aspects)
         self.assertIsNotNone(response.present_gochara)
+        self.assertIsNotNone(response.medical_dossier)
+        self.assertGreaterEqual(len(response.medical_dossier.consensus_vulnerabilities), 3)
 
 
 if __name__ == "__main__":
