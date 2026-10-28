@@ -76,6 +76,7 @@ class ClientProfile:
     latitude: float
     longitude: float
     place_name: str
+    marital_status: str = "Unmarried"
 
 
 @dataclass
@@ -147,6 +148,7 @@ class MultiMethodQAResponse:
     # Comprehensive Remedies
     remedies: ComprehensiveRemedialDossier
     medical_dossier: Optional[IntegrativeMedicalDossier] = None
+    targeted_prediction: Optional[Any] = None
 
 
 class MasterAstrologyQAEngine:
@@ -379,6 +381,22 @@ class MasterAstrologyQAEngine:
 
         remedies_dossier.lal_kitab_upayas.extend(lal_kitab.specific_totke_for_query[:3])
 
+        # Targeted Prediction conditioned on Question and Marital Status
+        from app.engines.targeted_prediction_engine import TargetedPredictionEngine
+        targeted_pred = TargetedPredictionEngine.predict(
+            kundali=natal_kundali,
+            question=query.question_text,
+            purpose_key=query.question_category,
+            marital_status=getattr(client, 'marital_status', 'Unmarried'),
+            active_dasha=active_dasha,
+            query_dt=query.query_datetime_local,
+            numerology_profile=numerology
+        )
+        if targeted_pred:
+            unified_verdict = targeted_pred.unified_verdict
+            consensus_prob = max(consensus_prob, targeted_pred.confidence_score)
+            timeline_forecast = f"• Targeted Window: {targeted_pred.primary_timeline_window}\n{timeline_forecast}"
+
         return MultiMethodQAResponse(
             client=client,
             query=query,
@@ -408,5 +426,6 @@ class MasterAstrologyQAEngine:
             primary_timeline_forecast=timeline_forecast,
             deep_dive_prediction_analysis=deep_dive_analysis,
             remedies=remedies_dossier,
-            medical_dossier=medical_dossier
+            medical_dossier=medical_dossier,
+            targeted_prediction=targeted_pred
         )

@@ -173,6 +173,8 @@ class TestMultiMethodAstrology(unittest.TestCase):
         self.assertIsNotNone(veh.evaluated_custom_plate)
         self.assertEqual(veh.evaluated_custom_plate.four_digit_sum, 10)
         self.assertEqual(veh.evaluated_custom_plate.four_digit_reduced, 1)
+        self.assertIsNotNone(veh.four_wheeler_feasibility)
+        self.assertIsNotNone(veh.vehicle_ownership_diagnosis)
 
     def test_name_tuning_and_alternate_names(self):
         birth_utc = datetime(1983, 5, 15, 5, 0, 0)

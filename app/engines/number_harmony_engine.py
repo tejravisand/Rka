@@ -83,6 +83,9 @@ class VehicleNumberGuidance:
     auspicious_parking_direction: str
     strategic_vehicle_advice: str
     evaluated_custom_plate: Optional[VehiclePlateEvaluationResult] = None
+    vehicle_ownership_diagnosis: str = ""
+    four_wheeler_feasibility: str = ""
+    remedy_for_vehicle_acquisition: str = ""
 
 
 class NumberHarmonyEngine:
@@ -281,6 +284,64 @@ class NumberHarmonyEngine:
             f"or compound {', '.join(map(str, unfav_compounds[:3]))}."
         )
 
+        # Classical Shastric Diagnosis for 4-Wheeler Feasibility & Obstacles
+        diag_points = []
+        four_wheeler_status = "Supported for 4-Wheeler Acquisition"
+        remedy_items = []
+
+        fourth_lord_pos = kundali.planets.get(fourth_lord)
+        fourth_lord_house = ((fourth_lord_pos.sign.value - lagna_idx) % 12) + 1 if fourth_lord_pos else 4
+
+        if fourth_lord_house in [6, 8, 12]:
+            four_wheeler_status = "Delayed / 2-Wheeler Commute Primary (Vahana Pratibandhaka)"
+            if fourth_lord_house == 8:
+                diag_points.append(
+                    f"4th Lord {fourth_lord} in 8th House (Dusthana): Classically causes 'Vahana Pratibandhaka' "
+                    f"(chronic postponement of 4-wheeler purchase, hesitation to handle heavy traffic/maintenance, favoring 2-wheelers or public commute)."
+                )
+                remedy_items.append(f"Feed green grass/palak to cows on Wednesdays to strengthen 4th Lord {fourth_lord}")
+            elif fourth_lord_house == 6:
+                diag_points.append(
+                    f"4th Lord {fourth_lord} in 6th House: Susceptibility to vehicle loan disputes or frequent minor mechanical repairs."
+                )
+                remedy_items.append(f"Chant Kavacham of 4th Lord {fourth_lord} for vehicular dispute protection")
+            elif fourth_lord_house == 12:
+                diag_points.append(
+                    f"4th Lord {fourth_lord} in 12th House: Higher vehicle depreciation or primary usage for outstation/relocation."
+                )
+
+        sat_pos = kundali.planets.get("Saturn")
+        rahu_pos = kundali.planets.get("Rahu")
+        sat_house = ((sat_pos.sign.value - lagna_idx) % 12) + 1 if sat_pos else 0
+        rahu_house = ((rahu_pos.sign.value - lagna_idx) % 12) + 1 if rahu_pos else 0
+
+        if sat_house == 1:
+            diag_points.append(
+                "Saturn in 1st House (Lagna): Instills simplicity, frugal pragmatism, and preference for basic functional mobility."
+            )
+        if rahu_house == 1:
+            diag_points.append(
+                "Rahu in 1st House (Lagna): Creates driving caution, traffic stress, or hesitation to manage personal luxury 4-wheelers."
+            )
+
+        if 16 in kundali.vargas:
+            d16 = kundali.vargas[16]
+            mars_d16 = d16.placements.get("Mars")
+            if mars_d16 and mars_d16.dignity == "Debilitated":
+                four_wheeler_status = "Delayed / 2-Wheeler Commute Primary (Vahana Pratibandhaka)"
+                diag_points.append(
+                    "In D16 Shodashamsha, Mars (motor vehicle karaka) is DEBILITATED (Neecha). "
+                    "This blocks effortless 4-wheeler car manifestation until a strong benefic/Lagna-lord period arrives."
+                )
+                remedy_items.append("Recite Hanuman Chalisa on Tuesdays to pacify afflicted conveyance karaka Mars in D16")
+
+        if not diag_points:
+            diag_points.append("4th House (Vahana Bhava) and conveyance indicators are well-aligned for smooth personal vehicle ownership.")
+            remedy_items.append("Keep a small silver token or Ganesha idol on the vehicle dashboard for travel safety")
+
+        veh_diagnosis = " ".join(diag_points)
+        veh_remedies = " | ".join(remedy_items)
+
         custom_res = None
         if specific_plate:
             custom_res = cls.evaluate_specific_vehicle_plate(specific_plate, kundali, mulank, bhagyank)
@@ -296,7 +357,10 @@ class NumberHarmonyEngine:
             caution_vehicle_colors=avoid_colors[:3],
             auspicious_parking_direction=parking_dir,
             strategic_vehicle_advice=advice,
-            evaluated_custom_plate=custom_res
+            evaluated_custom_plate=custom_res,
+            vehicle_ownership_diagnosis=veh_diagnosis,
+            four_wheeler_feasibility=four_wheeler_status,
+            remedy_for_vehicle_acquisition=veh_remedies
         )
 
     @classmethod

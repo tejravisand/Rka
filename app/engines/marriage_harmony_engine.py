@@ -33,6 +33,7 @@ class MarriageBreakupAssessment:
     primary_conflict_triggers: List[str]# Triggers: Ego, coldness, third-party, in-laws
     critical_vulnerable_periods: str    # Dasha periods requiring vigilance
     preventive_remedies_for_harmony: List[str] # Detailed upayas to heal marriage
+    number_of_marriages_verdict: str = "Strictly One Marriage (High Marital Permanence & Dharma)"
 
 
 class MarriageHarmonyEngine:
@@ -182,6 +183,24 @@ class MarriageHarmonyEngine:
             "Avoid displaying aggressive art, predatory animals, or thorny cacti in the bedroom; use pastel rose, ivory, or cream bedsheets."
         ]
 
+        # Number of Marriages Prediction Logic
+        dual_signs = [2, 5, 8, 11]  # Gemini, Virgo, Sagittarius, Pisces
+        fixed_signs = [1, 4, 7, 10]  # Taurus, Leo, Scorpio, Aquarius
+        lagna_is_dual = lagna_idx in dual_signs
+        h7_is_dual = h7_idx in dual_signs
+        lord_1 = SIGN_LORDS[lagna_idx]
+        lord_1_h = planet_houses.get(lord_1, 1)
+
+        # Classical Jaimini & Parashara rules
+        if lord_1_h == 7:
+            marriage_verdict = "Strictly One Marriage (Lagna Lord placed in 7th Kendra establishes unbreakable Dharmic protection over the 1st alliance)."
+        elif lagna_idx in fixed_signs or h7_idx in fixed_signs:
+            marriage_verdict = "Strictly One Marriage (Fixed Sign axis anchors unyielding matrimonial loyalty and permanence)."
+        elif (lagna_is_dual or h7_is_dual) and l7_house in [6, 8, 12] and risk_score > 35:
+            marriage_verdict = "Vulnerability to Multiple Alliances / Second Marriage indicated (Dual sign axis combined with 7th Lord in Dusthana)."
+        else:
+            marriage_verdict = "Single Lifelong Marriage (Standard resilient marital path with high commitment)."
+
         return MarriageBreakupAssessment(
             breakup_risk_level=risk_level,
             marital_longevity_score=longevity_score,
@@ -193,5 +212,6 @@ class MarriageHarmonyEngine:
             kp_sub_lord_separation_indicator=kp_indicator,
             primary_conflict_triggers=triggers if triggers else ["Minor periodic differences of opinion inherent to all partnerships."],
             critical_vulnerable_periods=vulnerable_periods,
-            preventive_remedies_for_harmony=remedies
+            preventive_remedies_for_harmony=remedies,
+            number_of_marriages_verdict=marriage_verdict
         )

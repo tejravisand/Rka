@@ -155,14 +155,14 @@ def generate_multimethod_qa_pdf(
         [
             Paragraph("<b>Birth Place:</b>", table_cell_bold),
             Paragraph(f"{c.place_name} ({c.latitude:.2f}°N, {c.longitude:.2f}°E)", table_cell),
-            Paragraph("<b>Active Dasha:</b>", table_cell_bold),
-            Paragraph(f"{response.current_active_dasha['mahadasha']}-{response.current_active_dasha['antardasha']}", table_cell)
+            Paragraph("<b>Marital Status:</b>", table_cell_bold),
+            Paragraph(f"<b>{getattr(c, 'marital_status', 'Unmarried')}</b>", table_cell)
         ],
         [
             Paragraph("<b>Lagna / Janma Rasi:</b>", table_cell_bold),
             Paragraph(f"{k.ascendant.sign.sanskrit_name} Lagna / {k.planets['Moon'].sign.sanskrit_name} Rasi ({k.planets['Moon'].nakshatra_name})", table_cell),
-            Paragraph("<b>Numerology:</b>", table_cell_bold),
-            Paragraph(f"Mulank {response.numerology.mulank} | Bhagyank {response.numerology.bhagyank} | Personal Year {response.numerology.personal_year}", table_cell)
+            Paragraph("<b>Active Dasha:</b>", table_cell_bold),
+            Paragraph(f"{response.current_active_dasha['mahadasha']}-{response.current_active_dasha['antardasha']}", table_cell)
         ]
     ]
 
@@ -201,7 +201,33 @@ def generate_multimethod_qa_pdf(
         ('RIGHTPADDING', (0, 0), (-1, -1), 6),
     ]))
     story.append(q_table)
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 5))
+
+    # Dedicated Targeted Astrological Prediction & Timeline Box
+    t_pred = getattr(response, 'targeted_prediction', None)
+    if t_pred:
+        t_box_data = [
+            [
+                Paragraph("<b>TARGETED ASTROLOGICAL PREDICTION & TIMELINE</b>", table_cell_bold),
+                Paragraph(f"<b>Timeline:</b> {t_pred.primary_timeline_window}", ParagraphStyle('TTime', parent=table_cell, textColor=c_gold, fontName='Helvetica-Bold'))
+            ],
+            [
+                Paragraph(t_pred.core_prediction_narrative, table_cell),
+                Paragraph(f"<b>Marital Profile:</b> {t_pred.marital_status}<br/><b>Mechanics:</b> {t_pred.astrological_mechanics}", table_cell)
+            ]
+        ]
+        t_table = Table(t_box_data, colWidths=[360, 180])
+        t_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#f0fff4')),
+            ('BOX', (0, 0), (-1, -1), 1.0, colors.HexColor('#38a169')),
+            ('LINEBELOW', (0, 0), (-1, 0), 0.5, colors.HexColor('#9ae6b4')),
+            ('TOPPADDING', (0, 0), (-1, -1), 4),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+            ('LEFTPADDING', (0, 0), (-1, -1), 6),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 6),
+        ]))
+        story.append(t_table)
+        story.append(Spacer(1, 5))
 
     # =========================================================================
     # SECTION 1: REAL-TIME PRESENT GOCHARA (TRANSIT) AT ENQUIRY MOMENT
@@ -416,10 +442,11 @@ def generate_multimethod_qa_pdf(
             )
         ],
         [
-            Paragraph("<b>Vehicle Registration Numbers:</b>", table_cell_bold),
+            Paragraph("<b>Vehicle & 4-Wheeler Diagnosis:</b>", table_cell_bold),
             Paragraph(
-                f"<b>4th Vahana Lord:</b> {veh.fourth_house_lord} | <b>Favourable 4-Digit Sums:</b> {', '.join(map(str, veh.favourable_plate_single_sums))}<br/>"
-                f"<b>STRICTLY AVOID (Accident/Repair Triggers):</b> Totals reducing to {', '.join(map(str, veh.unfavourable_plate_single_sums))}<br/>"
+                f"<b>4th Vahana Lord:</b> {veh.fourth_house_lord} | <b>4-Wheeler Status:</b> {veh.four_wheeler_feasibility}<br/>"
+                f"<b>Diagnosis:</b> {veh.vehicle_ownership_diagnosis}<br/>"
+                f"<b>Favourable 4-Digit Sums:</b> {', '.join(map(str, veh.favourable_plate_single_sums))} | <b>Avoid (Accident Triggers):</b> {', '.join(map(str, veh.unfavourable_plate_single_sums))}<br/>"
                 f"<b>Lucky Colors:</b> {', '.join(veh.lucky_vehicle_colors)} | <b>Avoid:</b> {', '.join(veh.caution_vehicle_colors)} | <b>Parking:</b> {veh.auspicious_parking_direction}<br/>"
                 f"<b>Tested Vehicle Plate:</b> {veh.evaluated_custom_plate.plate_number} (Sum {veh.evaluated_custom_plate.four_digit_sum}->{veh.evaluated_custom_plate.four_digit_reduced}) : <b>{veh.evaluated_custom_plate.safety_and_fortune_verdict.split('(')[0]}</b>" if veh.evaluated_custom_plate else "No custom plate passed.",
                 table_cell

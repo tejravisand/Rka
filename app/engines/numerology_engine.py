@@ -10,7 +10,7 @@ Implements:
 """
 from dataclasses import dataclass, field
 from datetime import date, datetime
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Any
 
 
 # Chaldean Alphabet Value Table (9 is omitted as sacred in Chaldean)
@@ -158,6 +158,19 @@ class NumerologyEngine:
         compound = sum(CHALDEAN_MAP.get(ch, 0) for ch in clean_name)
         single = reduce_to_single_digit(compound)
         return compound, single
+
+    @classmethod
+    def calculate_namank(cls, name: str) -> Dict[str, Any]:
+        """Calculates Chaldean compound, single digit, and planetary ruler for any name."""
+        comp, single = cls.calculate_chaldean_name(name)
+        ruler = NUMBER_RULERS.get(single, {}).get("planet", "Sun (Surya)")
+        nature = NUMBER_RULERS.get(single, {}).get("nature", "Dynamic")
+        return {
+            "chaldean_compound": comp,
+            "chaldean_single": single,
+            "ruling_planet": ruler,
+            "traits": nature
+        }
 
     @classmethod
     def calculate_pythagorean_name(cls, name: str) -> int:

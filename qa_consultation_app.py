@@ -54,6 +54,21 @@ class ConsultationServerHandler(http.server.SimpleHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(json.dumps({"status": "active", "timestamp": datetime.now().isoformat()}).encode("utf-8"))
             return
+        elif parsed.path == "/api/questions":
+            qs = urllib.parse.parse_qs(parsed.query)
+            purpose = qs.get("purpose", ["career"])[0]
+            status = qs.get("status", ["Unmarried"])[0]
+            from app.engines.question_catalog import QuestionCatalogEngine
+            choices = QuestionCatalogEngine.get_three_question_choices(purpose, status)
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(json.dumps({
+                "purpose": purpose,
+                "status": status,
+                "questions": choices
+            }).encode("utf-8"))
+            return
 
         # Fallback to default static file handler
         return super().do_GET()
@@ -72,6 +87,7 @@ class ConsultationServerHandler(http.server.SimpleHTTPRequestHandler):
                 lat = float(data.get("lat", 12.9716))
                 lon = float(data.get("lon", 77.5946))
                 tz = float(data.get("tz", 5.5))
+                marital_status = data.get("marital_status", "Unmarried")
                 question = data.get("question", "What is my immediate life trajectory and career milestone?")
                 category = data.get("category", "Career")
                 mobile = data.get("mobile", None)
@@ -87,6 +103,7 @@ class ConsultationServerHandler(http.server.SimpleHTTPRequestHandler):
                     tz_offset=tz,
                     question=question,
                     category=category,
+                    marital_status=marital_status,
                     query_dt=datetime.now(),
                     output_prefix="web_consultation",
                     mobile_test=mobile,
@@ -97,12 +114,16 @@ class ConsultationServerHandler(http.server.SimpleHTTPRequestHandler):
                 pdf_url = f"/output/{slug}_web_consultation.pdf"
                 html_url = f"/output/{slug}_web_consultation.html"
 
+                t_pred = getattr(response, "targeted_prediction", None)
                 res_payload = {
                     "status": "success",
                     "client_name": response.client.name,
+                    "marital_status": marital_status,
                     "unified_verdict": response.unified_verdict,
                     "confidence_score": response.consensus_probability_percent,
-                    "timeline": response.primary_timeline_forecast,
+                    "timeline": t_pred.primary_timeline_window if t_pred else response.primary_timeline_forecast,
+                    "prediction_narrative": t_pred.core_prediction_narrative if t_pred else response.deep_dive_prediction_analysis,
+                    "astrological_mechanics": t_pred.astrological_mechanics if t_pred else "",
                     "education_stream": response.education_stream.primary_stream,
                     "education_break_risk": f"{response.education_break.break_probability_percent}% ({response.education_break.risk_level})",
                     "profession_trajectory": response.profession.primary_career_direction,
@@ -276,6 +297,9 @@ def print_dossier_summary(resp: MultiMethodQAResponse):
         print(f"  ★ Tested Custom Mobile  : {em.mobile_number} (Sum {em.total_digits_sum}->{em.reduced_single_digit}) : {em.compatibility_verdict}")
 
     print(f"▶ VEHICLE REGISTRATION    : 4th Lord {veh.fourth_house_lord} | Favourable sums: {', '.join(map(str, veh.favourable_plate_single_sums))} | AVOID: {', '.join(map(str, veh.unfavourable_plate_single_sums))}")
+    print(f"  4-Wheeler Feasibility   : {veh.four_wheeler_feasibility}")
+    if veh.vehicle_ownership_diagnosis:
+        print(f"  Vahana Diagnosis        : {veh.vehicle_ownership_diagnosis}")
     print(f"  Lucky Vehicle Colors    : {', '.join(veh.lucky_vehicle_colors)} | Avoid: {', '.join(veh.caution_vehicle_colors)}")
     if veh.evaluated_custom_plate:
         ev = veh.evaluated_custom_plate
@@ -520,8 +544,10 @@ def generate_html_consultation_dossier(
                     <p><b>Avoid Single Sums:</b> <span style="color:#c53030; font-weight:bold;">{', '.join(map(str, resp.mobile_guidance.unfavourable_single_totals))}</span></p>
                 </div>
                 <div class="method-card">
-                    <h3>🚗 Vehicle Numbers (Vahana Bhava)</h3>
+                    <h3>🚗 Vehicle Numbers & 4-Wheeler Diagnosis (Vahana Bhava)</h3>
                     <p><b>4th House Vahana Lord:</b> {resp.vehicle_guidance.fourth_house_lord}</p>
+                    <p><b>4-Wheeler Status:</b> <span style="font-weight:bold; color:#d69e2e;">{resp.vehicle_guidance.four_wheeler_feasibility}</span></p>
+                    <p><b>Diagnosis:</b> <span style="font-size:0.9em; color:#4a5568;">{resp.vehicle_guidance.vehicle_ownership_diagnosis}</span></p>
                     <p><b>Favourable Plate Sums:</b> <span style="color:#2f855a; font-weight:bold;">{', '.join(map(str, resp.vehicle_guidance.favourable_plate_single_sums))}</span></p>
                     <p><b>Avoid Sums (Accident Triggers):</b> <span style="color:#c53030; font-weight:bold;">{', '.join(map(str, resp.vehicle_guidance.unfavourable_plate_single_sums))}</span></p>
                 </div>
@@ -557,6 +583,7 @@ def run_consultation_flow(
     tz_offset: float,
     question: str,
     category: str,
+    marital_status: str = "Unmarried",
     query_dt: Optional[datetime] = None,
     output_prefix: str = "consultation",
     mobile_test: Optional[str] = None,
@@ -575,7 +602,8 @@ def run_consultation_flow(
         tz_offset_hours=tz_offset,
         latitude=lat,
         longitude=lon,
-        place_name=place
+        place_name=place,
+        marital_status=marital_status
     )
 
     query = QueryContext(
@@ -629,10 +657,18 @@ if __name__ == "__main__":
     parser.add_argument("--query-dt", type=str, default="", help="Enquiry datetime (YYYY-MM-DD HH:MM:SS), defaults to current clock moment")
     parser.add_argument("--mobile", type=str, default="9845012345", help="Optional 10-digit mobile number to test")
     parser.add_argument("--vehicle", type=str, default="KA 01 AB 1234", help="Optional vehicle plate to test")
+    parser.add_argument("--marital-status", type=str, default="Unmarried", help="Marital Status (Unmarried or Married)")
+    parser.add_argument("--interactive", action="store_true", help="Launch interactive step-by-step consultation mode")
     parser.add_argument("--prefix", type=str, default="multi_method_consultation", help="Output filename prefix")
     parser.add_argument("--open-chrome", action="store_true", help="Automatically open generated PDF and HTML in Chrome")
     parser.add_argument("--serve", action="store_true", help="Launch interactive web server on specified port")
     parser.add_argument("--port", type=int, default=8080, help="Port for the interactive web server (default: 8080)")
+
+    # If no arguments given, or --interactive specified, run interactive consultation
+    if len(sys.argv) == 1 or "--interactive" in sys.argv:
+        from run_consultation import run_interactive_consultation
+        run_interactive_consultation()
+        sys.exit(0)
 
     args = parser.parse_args()
 
@@ -662,6 +698,7 @@ if __name__ == "__main__":
         tz_offset=args.tz,
         question=q_text,
         category=q_cat,
+        marital_status=args.marital_status,
         query_dt=enquiry_dt,
         output_prefix=args.prefix,
         mobile_test=args.mobile,
